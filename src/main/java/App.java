@@ -29,14 +29,16 @@ public class App {
 
         int day = random.nextInt(27)+1;
         int month = random.nextInt(11);
-        int year = random.nextInt(200);
+        int year = random.nextInt(200)+70;
         int hour = random.nextInt(23)+1;
         int min = random.nextInt(59)+1;
         int sec = random.nextInt(59)+1;
+
+        System.out.println("Dữ liệu đầu vào");
         System.out.format("%d/%d/%d %d:%d:%d\n",day,month+1,year+1900,hour,min,sec);
 
         Date date = new Date();
-        System.out.println(formatter.format(date));
+        //System.out.println(formatter.format(date));
         date.setDate(day);
         date.setMonth(month);
         date.setYear(year);
@@ -44,14 +46,20 @@ public class App {
         date.setMinutes(min);
         date.setSeconds(sec);
 
-       // System.out.println("Tính sang giây bằng: "+toSec(day,month+1,year+1900,hour,min,sec)+" giây");
+        System.out.println("\nKết quả làm tay");
+        //bai 1 date to sec
+        System.out.println("Tính sang giây bằng: "+toSec(day,month+1,year+1900,hour,min,sec)+" giây");
+        //bai 1 sec to date
+        secToDate(toSec(day,month+1,year+1900,hour,min,sec));
 
 
-        System.out.println(formatter.format(date));
+        // khuc nay dùng thư viện nhàn cực :)))
+        System.out.println("\nKết quả dùng thư viện");
+        //System.out.println(formatter.format(date));
         long ts = date.getTime()/1000;
-        System.out.println(ts);
-
-
+        System.out.println("Tính sang giây bằng: "+ ts + " giây");
+        Date nDate = new Date(ts*1000);
+        System.out.println(ts + " giây sang ngày là: " + formatter.format(nDate));
     }
 
     public static boolean yearCheck(int year){
@@ -97,7 +105,28 @@ public class App {
         return result;
     }
 
-    public static void secToDate(long sec){
+    public static void secToDate(long time){
+        long date = time/(24*60*60);
+        long timeInDay = time%(24*60*60);
+        int hour = (int)timeInDay/3600;
+        int min = (int)(timeInDay%3600)/60;
+        int sec = (int)(timeInDay%3600)%60;
+        int year = 1970;
+        do{
+            if (yearCheck(year))
+                date-= 366;
+            else
+                date-= 365;
+
+            year++;
+        }while (date/366 >=  1 );
+        int month = 0;
+        do{
+            month++;
+            date-= days(month,year);
+        }while (date/days(month,year) >=  1);
+        int day = (int)date;
+        System.out.format(time + " giây sang ngày là: %d/%d/%d %d:%d:%d\n",day,month,year,hour,min,sec);
 
     }
 
